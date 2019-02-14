@@ -1,0 +1,94 @@
+version: '3.7'
+
+services:
+
+  tc_tango_master:
+    image: skasiid/sdp_tango_master:0.1.0
+    environment:
+      - TANGO_HOST=tc_tango_database:10000
+    deploy:
+      mode: replicated
+      replicas: 1
+    # healthcheck:
+    #   test: ["CMD", "python3", "-c",
+    #          "import tango;
+    #          d=tango.DeviceProxy('siid_sdp/elt/master');
+    #          p.ping()"]
+    #   interval: 20s
+    #   timeout: 10s
+    #   retries: 3
+
+  # tc_tango_subarray:
+  #   image: skasiid/sdp_tango_subarray:0.1.0
+  #   environment:
+  #     - TANGO_HOST=tc_tango_database:10000
+  #   deploy:
+  #     mode: replicated
+  #     replicas: 1
+  #   healthcheck:
+  #     test: ["CMD", "python3", "-c",
+  #            "import tango;
+  #            d=tango.DeviceProxy('siid_sdp/elt/subarray_00');
+  #            p.ping()"]
+  #     interval: 20s
+  #     timeout: 10s
+  #     retries: 3
+
+  # tc_tango_processing_block:
+  #   image: skasiid/sdp_tango_processing_block:0.1.0
+  #   environment:
+  #     - TANGO_HOST=tc_tango_database:10000
+  #   deploy:
+  #     mode: replicated
+  #     replicas: 1
+  #   healthcheck:
+  #     test: ["CMD", "python3", "-c",
+  #            "import tango;
+  #            d=tango.DeviceProxy('siid_sdp/pb/0000');
+  #            p.ping()"]
+  #     interval: 20s
+  #     timeout: 10s
+  #     retries: 3
+
+  tc_tango_database:
+    image: skasiid/tango_database:0.1.0
+    ports:
+      - 10000:10000
+    environment:
+      - MYSQL_HOST=tc_tango_mysql:3306
+      - MYSQL_USER=tango
+      - MYSQL_PASSWORD=tango
+      - MYSQL_DATABASE=tango_db
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      # healthcheck:
+      #   test: ["CMD", "python3", "-c",
+      #         "import tango;
+      #         d=tango.DeviceProxy('sys/database/2');
+      #         p.ping()"]
+      #   interval: 20s
+      #   timeout: 10s
+      #   retries: 3
+
+  tc_tango_mysql:
+    image: skasiid/tango_mysql:0.1.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=abc123
+    deploy:
+      mode: replicated
+      replicas: 1
+    healthcheck:
+      test: ["CMD", "mysql", "--user=tango", "--password=tango",
+             "-e", "SHOW DATABASES LIKE 'tango_db';"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - tango_mysql:/var/lib/mysql:consistent
+
+volumes:
+  tango_mysql:
