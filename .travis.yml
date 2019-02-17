@@ -1,0 +1,41 @@
+sudo: required
+
+dist: xenial
+
+services:
+  - docker
+
+language: python
+
+python:
+  - '3.6'
+
+stages:
+  - tests
+
+cache: pip
+
+jobs:
+
+  include:
+
+  - stage: test
+    name: "Tango Master"
+    install:
+    - pip install codecov==2.0.15
+    - pip install coveralls==1.5.1
+    script:
+    - |
+      docker run --rm -it \
+        -v "$(pwd)":"$(pwd)":rw \
+        -w "$(pwd)" \
+        --entrypoint=./tango_tests/run_test.sh \
+        skasiid/tango_tests \
+        tango_master
+
+    after_success:
+    - ls $pwd
+    - codecov
+    - coveralls
+    after_script:
+    - docker stop tango_master

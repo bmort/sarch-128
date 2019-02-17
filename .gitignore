@@ -1,0 +1,30 @@
+# Python temp files
+**/__pycache__/
+**/*.py~
+**/*.pyc
+
+# Python virtualenv folder
+**/venv/
+
+# Project files
+**/.idea/
+**/.vscode/
+**/*.swp
+
+# MacOS folder attributes files
+**/*.DS_Store
+
+# Test folders
+/_build/
+test_reports.xml
+**/.cache
+**/.pytest_cache/
+
+# Code coverage
+**/.coverage
+
+# Python package build folders / files
+**/*.egg-info
+**/*.rdb
+**/build/
+**/dist/
