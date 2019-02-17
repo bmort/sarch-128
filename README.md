@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.com/bmort/sarch-128.svg?branch=master)](https://travis-ci.com/bmort/sarch-128)
 [![codecov](https://codecov.io/gh/bmort/sarch-128/branch/master/graph/badge.svg)](https://codecov.io/gh/bmort/sarch-128)
+[![Coverage Status](https://coveralls.io/repos/github/bmort/sarch-128/badge.svg?branch=)](https://coveralls.io/github/bmort/sarch-128?branch=)
 
 # SKA Solution Intent Interface Demo
 
