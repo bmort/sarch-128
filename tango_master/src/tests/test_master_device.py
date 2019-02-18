@@ -10,7 +10,7 @@ from ..sdp_master_device import SDPMaster
 
 
 def get_open_port():
-    """."""
+    """Select an open port to test with."""
     _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     _socket.bind(("", 0))
     _socket.listen(1)
@@ -20,7 +20,7 @@ def get_open_port():
 
 
 def test_tango_master_device():
-    """."""
+    """Check that we can successfully connect to the SDP Master device."""
     port = get_open_port()
     # context = DeviceTestContext(SDPMaster, port=port, process=False)
     context = DeviceTestContext(SDPMaster, port=port, process=True)

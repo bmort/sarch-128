@@ -45,3 +45,19 @@ jobs:
       ./tools/run_test.sh \
       tango_master/src/tests/test_sbi_config_schema.py \
       --no-cov
+
+  - stage: test
+    name: "Test Tango Subarray"
+    install:
+    - pip install -r test_requirements.txt
+    script:
+    - |
+      docker run --rm -it \
+        -v "$(pwd)":"$(pwd)":rw \
+        -w "$(pwd)" \
+        --entrypoint=./tools/run_test.sh \
+        skasiid/tango_tests \
+        tango_subarray
+    after_success:
+    - codecov
+    - coveralls
