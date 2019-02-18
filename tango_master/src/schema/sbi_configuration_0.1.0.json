@@ -1,0 +1,199 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Scheduling Block Instance (SBI) configuration",
+    "description": "JSON Schema for SIID SDP SBI configuration",
+    "version": "0.1.0",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "id",
+      "version",
+      "scheduling_block",
+      "processing_blocks"
+    ],
+    "properties": {
+      "id": {
+        "description": "SBI Id, SBI-[date]-[project]-*",
+        "type": "string",
+        "pattern": "^SBI-[0-9]{8}-[a-z|A-Z]+-.*$"
+      },
+      "version": {
+        "description": "SBI configuration version",
+        "enum": ["0.1.0"]
+      },
+      "scheduling_block": {
+        "description": "Scheduling Block data object",
+        "$ref": "#/definitions/scheduling_block"
+      },
+      "processing_blocks": {
+        "description": "Array of PB configuration defined for this SBI",
+        "type": "array",
+        "items": {
+          "description": "PB configuration",
+          "$ref": "#/definitions/processing_block"
+        }
+      },
+      "observation_config": {
+          "description": "Observation configuration data",
+          "type": "object"
+      },
+      "scans": {
+        "description": "Array of Scans associated with this SBI",
+        "type": "array",
+        "items": {
+          "description": "Scan configuration object",
+          "$ref": "#/definitions/scan"
+        }
+      }
+    },
+
+    "definitions": {
+
+      "scheduling_block": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "description": "SB Id",
+            "type": "string"
+          },
+          "project": {
+            "description": "Project Id",
+            "type": "string"
+          },
+          "telescope": {
+            "description": "Telescope Id",
+            "type": "string"
+          },
+          "programme_block": {
+            "description": "Programme block Id",
+            "type": "string"
+          }
+        }
+      },
+
+      "scan":
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+            "id"
+        ],
+        "properties": {
+            "id": {
+                "description": "Scan Identifier",
+                "type": "string"
+            }
+        }
+      },
+
+      "processing_block": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "type",
+          "workflow"
+        ],
+        "properties": {
+          "id": {
+            "description": "Primary PB Id, PB-[date]-[project]-*",
+            "type": "string",
+            "pattern": "^PB-[0-9]{8}-[a-z|A-Z]+-.*$"
+          },
+          "version": {
+            "description": "PB configuration version",
+            "type": "string",
+            "pattern": "[0-9]{1,4}.[0-9]{1,4}.[0-9]{1,4}"
+          },
+          "type": {
+            "description": "[REAL_TIME, OFFLINE]",
+            "enum": [
+              "REAL_TIME",
+              "OFFLINE"
+            ]
+          },
+          "workflow": {
+            "description": "PB workflow description",
+            "type": "object",
+            "required": [
+              "id",
+              "version",
+              "configuration"
+            ],
+            "$ref": "#/definitions/workflow"
+          },
+          "priority": {
+            "description": "PB priority",
+            "type": "number",
+            "minimum": -1,
+            "maximum": 100
+          },
+          "dependencies": {
+            "description": "PB dependencies",
+            "type": "array",
+            "items": {
+              "description": "PB dependency",
+              "type": "object",
+              "required": [
+                "type",
+                "value",
+                "condition"
+              ],
+              "$ref": "#/definitions/dependency"
+            }
+          }
+        }
+      },
+
+      "workflow": {
+        "additionalProperties": false,
+        "required": ["id", "version"],
+        "properties": {
+          "id": {
+            "description": "Workflow identifier",
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "parameters": {
+            "description": "Workflow stage configuration parameters",
+            "type": "object"
+          }
+        }
+      },
+
+      "dependency":
+      {
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "value",
+          "condition"
+        ],
+        "properties": {
+          "type": {
+            "description": "Type of dependency",
+            "type": "string"
+          },
+          "value": {
+            "description": "Value of the dependency",
+            "type": "string"
+          },
+          "condition": {
+            "description": "Dependency condition",
+            "type": "string"
+          },
+          "parameters": {
+            "description": "Additional parameters describing the dependency",
+            "type": "object"
+          }
+        }
+      }
+
+    }
+  }

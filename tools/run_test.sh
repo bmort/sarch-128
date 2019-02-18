@@ -1,24 +1,43 @@
 #!/usr/bin/env bash
-DIR="$1"
 RED='\033[0;31m'
 NC='\033[0m'
 
-if [[ $2 == "--tests-only" ]]; then
+DIR="$1"
+OPTIONS=("${@:2}")
+
+if [[ -n "${OPTIONS[*]}" && "${OPTIONS[0]}" == "--tests-only" ]]; then
     CMD="python3 -m pytest -s -vv \
         --rootdir=. \
-        --cov-config=./tango_tests/setup.cfg \
+        ${OPTIONS[*]} \
+        ${DIR}"
+elif [[ -n "${OPTIONS[*]}" && "${OPTIONS[0]}" == "--no-cov" ]]; then
+    CMD="python3 -m pytest -s -vv \
+        --rootdir=. \
+        --pylint \
+        --codestyle \
+        --docstyle \
+        ${OPTIONS[*]} \
+        ${DIR}"
+elif [[ -n "${OPTIONS[*]}" ]]; then
+    CMD="python3 -m pytest -s -vv \
+        --rootdir=. \
+        --pylint \
+        --codestyle \
+        --docstyle \
+        --cov-config=./tools/setup.cfg \
         --cov-append \
         --cov-branch \
         --no-cov-on-fail \
         --cov=${DIR} \
-         ${DIR}"
+        ${OPTIONS[*]} \
+        ${DIR}"
 else
     CMD="python3 -m pytest -s -vv \
         --rootdir=. \
         --pylint \
         --codestyle \
         --docstyle \
-        --cov-config=./tango_tests/setup.cfg \
+        --cov-config=./tools/setup.cfg \
         --cov-append \
         --cov-branch \
         --no-cov-on-fail \

@@ -22,8 +22,7 @@ jobs:
   - stage: test
     name: "Test Tango Master"
     install:
-    - pip install codecov==2.0.15
-    - pip install coveralls==1.5.1
+    - pip install -r test_requirements.txt
     script:
     - |
       docker run --rm -it \
@@ -31,11 +30,18 @@ jobs:
         -w "$(pwd)" \
         --entrypoint=./tools/run_test.sh \
         skasiid/tango_tests \
-        tango_master
-
+        tango_master -k test_master_device
     after_success:
-    - ls $pwd
     - codecov
     - coveralls
-    after_script:
-    - docker stop tango_master
+
+  - stage: test
+    name: "Test SBI Config schema"
+    install:
+    - pip install -r test_requirements.txt
+    - pip install jsonschema==2.6.0
+    script:
+    - |
+      ./tools/run_test.sh \
+      tango_master/src/tests/test_sbi_config_schema.py \
+      --no-cov
