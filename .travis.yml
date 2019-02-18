@@ -20,7 +20,7 @@ jobs:
   include:
 
   - stage: test
-    name: "Tango Master"
+    name: "Test Tango Master"
     install:
     - pip install codecov==2.0.15
     - pip install coveralls==1.5.1
@@ -29,7 +29,7 @@ jobs:
       docker run --rm -it \
         -v "$(pwd)":"$(pwd)":rw \
         -w "$(pwd)" \
-        --entrypoint=./tango_tests/run_test.sh \
+        --entrypoint=./tools/run_test.sh \
         skasiid/tango_tests \
         tango_master
 
